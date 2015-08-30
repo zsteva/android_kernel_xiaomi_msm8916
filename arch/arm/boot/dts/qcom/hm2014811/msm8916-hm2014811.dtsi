@@ -162,7 +162,6 @@
 };
 
 &mdss_dsi_r61308_720p_video {
-	qcom,esd-check-enabled;
 	qcom,cont-splash-enabled;
 };
 
@@ -171,7 +170,6 @@
 };
 
 &mdss_dsi_r61308_s88047a1_720p_video {
-	qcom,esd-check-enabled;
 	qcom,cont-splash-enabled;
 };
 
