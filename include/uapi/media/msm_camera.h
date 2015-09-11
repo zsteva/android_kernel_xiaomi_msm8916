@@ -1609,6 +1609,7 @@ struct msm_camera_csi_lane_params {
 
 struct camera_vreg_t {
 	const char *reg_name;
+	enum camera_vreg_type type;
 	int min_voltage;
 	int max_voltage;
 	int op_mode;
