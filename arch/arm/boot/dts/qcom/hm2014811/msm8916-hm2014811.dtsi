@@ -11,7 +11,6 @@
  */
 
 #include "msm8916-camera-sensor-hm2014811.dtsi"
-#include "msm-pm8916-hm2014811.dtsi"
 #include "dsi-panel-r69431-720p-video.dtsi"
 #include "dsi-panel-nt35521s-720p-video.dtsi"
 #include "dsi-panel-nt35521-ofilm-720p-video.dtsi"
