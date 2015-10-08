@@ -62,6 +62,11 @@ static ssize_t zram_attr_##name##_show(struct device *d,		\
 static struct device_attribute dev_attr_##name =			\
 	__ATTR(name, S_IRUGO, zram_attr_##name##_show, NULL);
 
+static inline int init_done(struct zram *zram)
+{
+	return zram->meta != NULL;
+}
+
 static int zram_show_mem_notifier(struct notifier_block *nb,
 				unsigned long action,
 				void *data)
@@ -78,17 +83,17 @@ static int zram_show_mem_notifier(struct notifier_block *nb,
 		if (!down_read_trylock(&zram->init_lock))
 			continue;
 
-		if (zram->init_done) {
+		if (init_done(zram)) {
 			u64 val;
 			u64 data_size;
 
 			val = zs_get_total_size_bytes(meta->mem_pool);
-			data_size = atomic64_read(&zram->stats.compr_size);
+			data_size = atomic64_read(&zram->stats.compr_data_size);
 			pr_info("Zram[%d] mem_used_total = %llu\n", i, val);
 			pr_info("Zram[%d] compr_data_size = %llu\n", i,
 				(unsigned long long)data_size);
-			pr_info("Zram[%d] orig_data_size = %u\n", i,
-				zram->stats.pages_stored);
+			pr_info("Zram[%d] orig_data_size = %llu\n", i,
+				atomic64_read(&zram->stats.pages_stored));
 		}
 
 		up_read(&zram->init_lock);
@@ -100,11 +105,6 @@ static int zram_show_mem_notifier(struct notifier_block *nb,
 static struct notifier_block zram_show_mem_notifier_block = {
 	.notifier_call = zram_show_mem_notifier
 };
-
-static inline int init_done(struct zram *zram)
-{
-	return zram->meta != NULL;
-}
 
 static inline struct zram *dev_to_zram(struct device *dev)
 {
@@ -609,7 +609,7 @@ static int zram_bvec_rw(struct zram *zram, struct bio_vec *bvec, u32 index,
 static void zram_bio_discard(struct zram *zram, u32 index,
 			     int offset, struct bio *bio)
 {
-	size_t n = bio->bi_iter.bi_size;
+	size_t n = bio->bi_sector;
 
 	/*
 	 * zram manages data in physical block size units. Because logical block
