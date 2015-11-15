@@ -290,6 +290,7 @@
 		liteon,ps-pulses = <4>;
 		liteon,wakeup-threshold = <4>;
 		liteon,als-integration-time = <0>;
+		liteon,ps-distance-table = <2000 840 510 420 300 255 232>;
 	};
 
 	mpu6050@68 {
